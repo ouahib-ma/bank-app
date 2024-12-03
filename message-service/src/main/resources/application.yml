@@ -1,0 +1,55 @@
+server:
+  port: 8081
+  servlet:
+    context-path: /api
+
+spring:
+  application:
+    name: message-service
+
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/banque_message_db}
+    username: ${SPRING_DATASOURCE_USERNAME:banque_user}
+    password: ${SPRING_DATASOURCE_PASSWORD:banque_password}
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      idle-timeout: 300000
+      connection-timeout: 20000
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        jdbc:
+          batch_size: 50
+
+logging:
+  level:
+    root: INFO
+    com.banque.partnerservice: DEBUG
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+
+# Configuration MQ
+ibm:
+  mq:
+    queue-manager: QM_BANQUE
+    channel: DEV.CHANNEL
+    conn-name: localhost(1414)
+    user: admin
+    password: passw0rd
+
+mq:
+  queue:
+    primary: BANQUE.MESSAGE.QUEUE
+    dead-letter: BANQUE.DLQ
+  batch:
+    size: 100

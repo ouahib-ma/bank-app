@@ -1,0 +1,86 @@
+/* You can add global styles to this file, and also import other style files */
+@use '@angular/material' as mat;
+
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.mat-mdc-card {
+  margin: 16px;
+}
+
+.content-container {
+  padding: 20px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.flex-spacer {
+  flex: 1 1 auto;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.mt-2 {
+  margin-top: 16px;
+}
+
+.mb-2 {
+  margin-bottom: 16px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.mat-mdc-table {
+  width: 100%;
+  background-color: white;
+
+  .mat-mdc-row:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+  }
+}
+
+.status-new {
+  color: #1976d2;
+  font-weight: 500;
+}
+
+.status-processing {
+  color: #ffd740;
+  font-weight: 500;
+}
+
+.status-processed {
+  color: #43a047;
+  font-weight: 500;
+}
+
+.status-error {
+  color: #d32f2f;
+  font-weight: 500;
+}
+
+.message-dialog-container {
+  .mat-dialog-container {
+    padding: 0;
+  }
+}
+
+.message-content {
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: monospace;
+  background-color: #f5f5f5;
+  padding: 10px;
+  border-radius: 4px;
+}

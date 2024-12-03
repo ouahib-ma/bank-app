@@ -1,0 +1,24 @@
+.table-container {
+  margin: 20px;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+}
+
+.content-cell {
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mat-column-actions {
+  width: 80px;
+  text-align: center;
+}
+
+mat-card {
+  margin: 20px;
+}

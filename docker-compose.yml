@@ -1,0 +1,97 @@
+version: '3.8'
+
+services:
+  message-service:
+    build:
+      context: ./message-service
+    container_name: message-service
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/banque_message_db
+      - SPRING_DATASOURCE_USERNAME=banque_user
+      - SPRING_DATASOURCE_PASSWORD=banque_password
+      - IBM_MQ_HOST=mq
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+      mq:
+        condition: service_started
+    networks:
+      - banque-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/api/actuator/health"]
+      interval: 30s
+      timeout: 3s
+      start_period: 60s
+      retries: 3
+
+  partner-service:
+    build:
+      context: ./partenaire-service
+    container_name: partner-service
+    ports:
+      - "8083:8083"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/banque_partner_db
+      - SPRING_DATASOURCE_USERNAME=banque_user
+      - SPRING_DATASOURCE_PASSWORD=banque_password
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+    networks:
+      - banque-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8083/api/actuator/health"]
+      interval: 30s
+      timeout: 3s
+      start_period: 60s
+      retries: 3
+
+  mq:
+    image: ibmcom/mq:latest
+    container_name: mq
+    environment:
+      - LICENSE=accept
+      - MQ_QMGR_NAME=QM_BANQUE
+      - MQ_APP_PASSWORD=passw0rd
+    ports:
+      - "1414:1414"
+      - "9443:9443"
+    volumes:
+      - mq_data:/mnt/mqm
+    networks:
+      - banque-network
+    healthcheck:
+      test: ["CMD-SHELL", "dspmq -m QM_BANQUE | grep Running"]
+      interval: 30s
+      timeout: 15s
+      retries: 5
+
+  postgres-db:
+    build:
+      context: ./postgres-db
+    container_name: postgres-db
+    environment:
+      - POSTGRES_USER=banque_user
+      - POSTGRES_PASSWORD=banque_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - banque-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U banque_user"]
+      interval: 10s
+      timeout: 5s
+      start_period: 30s
+      retries: 5
+
+networks:
+  banque-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  mq_data:
